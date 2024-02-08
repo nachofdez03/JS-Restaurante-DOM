@@ -661,12 +661,5 @@ let RestaurantsManager = (function () {
 })();
 
 // Exportamos las clases
-export {
-  Dish,
-  Category,
-  Allergen,
-  Menu,
-  Restaurant,
-  Coordinate,
-  RestaurantsManager,
-};
+export default RestaurantsManager;
+export { Dish, Category, Allergen, Menu, Restaurant, Coordinate };
