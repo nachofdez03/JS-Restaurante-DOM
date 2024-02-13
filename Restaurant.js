@@ -1,4 +1,4 @@
-// Implementación nueva de la práctica
+// MODEL
 
 // Importamos las excepciones mediante un modulos
 import {
@@ -604,6 +604,7 @@ let RestaurantsManager = (function () {
           menu,
           dishes: [],
         });
+        return menu;
       }
     }
     // Creamos Alergia
@@ -618,6 +619,7 @@ let RestaurantsManager = (function () {
         // Si no lo crea y lo registra
         let allergen = new Allergen(name, description);
         this.#allergens.push(allergen);
+        return allergen;
       }
     }
     // Creamos la categoria
@@ -632,6 +634,7 @@ let RestaurantsManager = (function () {
         // Si no lo crea y lo registra
         let categorie = new Category(name, description);
         this.#categories.push(categorie);
+        return categorie;
       }
     }
     // Creamos restaurante
@@ -646,6 +649,7 @@ let RestaurantsManager = (function () {
         // Si no lo crea y lo registra
         let restaurant = new Restaurant(name, description, location);
         this.#restaurants.push(restaurant);
+        return restaurant;
       }
     }
   }
