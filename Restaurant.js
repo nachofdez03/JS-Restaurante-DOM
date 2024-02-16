@@ -652,6 +652,34 @@ let RestaurantsManager = (function () {
         return restaurant;
       }
     }
+
+    getCategory(categoryName) {
+      return this.#categories.find(
+        (category) => category.name === categoryName
+      );
+    }
+
+    getAllergen(allergenName) {
+      return this.#allergens.find((allergen) => allergen.name === allergenName);
+    }
+
+    getRestaurant(restaurantName) {
+      return this.#restaurants.find(
+        (restaurant) => restaurant.name == restaurantName
+      );
+    }
+
+    getMenu(menuName) {
+      const menu = this.#menus.find((menu) => menu.menu.name === menuName);
+
+      return menu.menu; // Devuelve el plato encontrado
+    }
+
+    getDish(dishName) {
+      const dish = this.#dishes.find((entry) => entry.dish.name === dishName);
+
+      return dish.dish; // Devuelve el plato encontrado
+    }
   }
   // Esto es lo que devolvemos, una instancia que solo podra ser una
   return {
