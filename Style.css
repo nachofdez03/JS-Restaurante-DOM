@@ -58,7 +58,7 @@ body {
 .main {
   background-color: yellow;
   display: grid;
-  grid-template-rows: 25% 20% 7% 12% 16% 20%; /* Ajusta las proporciones según tus necesidades */
+  grid-template-rows: 25% 15% 7% 12% 21% 20%; /* Ajusta las proporciones según tus necesidades */
 }
 
 .main__image {

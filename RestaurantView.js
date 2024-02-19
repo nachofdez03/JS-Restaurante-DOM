@@ -40,7 +40,9 @@ class RestaurantView {
           category.name
         }" href="#product-list">
       <div><img class="category-image" alt="${category.name}" 
-      src="${"./Multimedia/" + category.name + ".jpg"}" />
+      src="${
+        "./Multimedia/" + category.name + ".jpg"
+      }" style="max-width: 100%; max-height: 550px;"/>
       </div>
       <div>
       <h3>${category.name}</h3>
@@ -198,7 +200,9 @@ class RestaurantView {
         `<div><a data-dish=${plato.name}><img class="category-image" alt="${
           plato.name
         }" 
-        src="${"./Multimedia/" + plato.name + ".jpg"}" />  <div>
+        src="${
+          "./Multimedia/" + plato.name + ".jpg"
+        }" style="max-width: 100%; max-height: 550px;" />  <div>
         <h3>${plato.name}</h3></a></div></div>`
       );
 
@@ -292,17 +296,24 @@ class RestaurantView {
     for (const dish of dishes) {
       container.insertAdjacentHTML(
         "beforeend",
-        `<div class="plate-item">
-           <a data-dish="${dish.name}">
-            <div><img class="category-image" class="plate-image"  
-            src="${"./Multimedia/" + dish.name + ".jpg"}" /></div>
-            <div>
-              <h3>${dish.name}</h3>
+        `
+            <div class="plate-item">
+                <a data-dish="${dish.name}">
+                    <div>
+                        <img class="category-image plate-image" 
+                             style="max-width: 100%; max-height: 550px;" 
+                             src="${"./Multimedia/" + dish.name + ".jpg"}" 
+                             alt="${dish.name}" />
+                    </div>
+                    <div>
+                        <h3>${dish.name}</h3>
+                    </div>
+                </a>
             </div>
-          </a>
-        </div>`
+            `
       );
     }
+
     this.categories.append(container);
   }
 
@@ -344,22 +355,32 @@ class RestaurantView {
   }
   dishInformation(dish) {
     this.dishh.replaceChildren();
+
     this.dishh.insertAdjacentHTML(
       "beforeend",
       `
-    <div class="contenedor-externo">
-      <div class="izquierda">
-        <img src="${
-          "./Multimedia/" + dish.name.replace(/\s+/g, "") + ".jpg"
-        }" class="fotoplato">
-      </div>
-      <div class="derecha">
-        <p>Nombre: ${dish.name}</p>
-        <p>Descripcion: ${dish.description} 2</p>
-        <p>Ingredientes${dish.ingredients} 3</p>
-      </div>
-    </div>
-  `
+        <div class="card mx-auto" style="max-width: 9rem;">
+            <img src="${
+              "./Multimedia/" + dish.name.replace(/\s+/g, "") + ".jpg"
+            }" class="card-img-top fotoplato" alt="${dish.name}" >
+            <div class="card-body">
+                <h5 class="card-title" style="font-size: 1rem;">Nombre: ${
+                  dish.name
+                }</h5>
+                <p class="card-text" style="font-size: 0.9rem;">Descripción: ${
+                  dish.description
+                }</p>
+                <p class="card-text" style="font-size: 0.9rem;">Ingredientes: ${
+                  dish.ingredients
+                }</p>
+                <button class="btn btn-primary" onclick="comprar('${
+                  dish.name
+                }')">Comprar</button>
+                </div>
+            </div>
+            
+        </div>
+        `
     );
   }
 

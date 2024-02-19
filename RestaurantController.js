@@ -68,6 +68,11 @@ class RestaurantController {
       "huevo",
       "queso",
     ]);
+    const pizzaVegetariana = this[MODEL].createDish(
+      "PizzaVegetariana",
+      "Pizza vegetariana",
+      ["Tomate", "Lechuga", "Cebolla", "Queso"]
+    );
 
     const lionsRestaurant = this[MODEL].createRestaurant(
       "LionsRestaurant",
@@ -124,6 +129,7 @@ class RestaurantController {
     this[MODEL].assignCategoryToDish(macarrones, verduras, carne);
     this[MODEL].assignCategoryToDish(sardinas, pescado);
     this[MODEL].assignCategoryToDish(pizza, carne);
+    this[MODEL].assignCategoryToDish(pizzaVegetariana, verduras);
 
     this[MODEL].assignAllergenToDish(nueces, alergiaFrutosSecos);
     this[MODEL].assignAllergenToDish(boqueron, alergiaPescado);
@@ -131,6 +137,12 @@ class RestaurantController {
     this[MODEL].assignAllergenToDish(kebab, alergiaHuevo);
     this[MODEL].assignAllergenToDish(macarrones, alergiaTomate, alergiaHuevo);
     this[MODEL].assignAllergenToDish(pizza, alergiaTomate, alergiaHuevo);
+    this[MODEL].assignAllergenToDish(ensalada, alergiaTomate, alergiaPescado);
+    this[MODEL].assignAllergenToDish(
+      pizzaVegetariana,
+      alergiaTomate,
+      alergiaHuevo
+    );
 
     this[MODEL].assignDishToMenu(menuCarne, sardinas, boqueron, kebab);
     this[MODEL].assignDishToMenu(menuVegetariano, ensalada, macarrones, nueces);
