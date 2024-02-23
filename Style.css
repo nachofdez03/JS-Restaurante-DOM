@@ -27,7 +27,7 @@ body {
   align-items: center;
 }
 .nav li {
-  margin-right: 80px;
+  margin-right: 40px;
 }
 
 .nav a {
@@ -35,7 +35,7 @@ body {
   align-items: center;
   text-decoration: none;
   color: white;
-  font-size: 20px;
+  font-size: 16.5px;
 }
 .logo__image {
   display: flex;

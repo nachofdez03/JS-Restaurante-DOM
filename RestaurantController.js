@@ -146,7 +146,7 @@ class RestaurantController {
 
     this[MODEL].assignDishToMenu(menuCarne, sardinas, boqueron, kebab);
     this[MODEL].assignDishToMenu(menuVegetariano, ensalada, macarrones, nueces);
-    this[MODEL].assignDishToMenu(menuDeLaCasa, kebab, pizza);
+    this[MODEL].assignDishToMenu(menuDeLaCasa, kebab, pizza, macarrones);
   }
   1;
   // Ahora creamos un método de aplicación que estará en el constructor, se invocará con cada recarga
@@ -243,6 +243,14 @@ class RestaurantController {
 
     console.log("ES UNDEFINED??" + dish.name);
     this[VIEW].dishInformation(dish);
+    this[VIEW].bindShowProductInNewWindow(this.handleShowProductInNewWindow);
+  };
+
+  // Handle que le pasaremos al método de capturar el botón con la información del plato
+  handleShowProductInNewWindow = (dishName) => {
+    const dish = this[MODEL].getDish(dishName);
+    this[VIEW].showProductInNewWindow(dish);
+    this[VIEW].closeWindow();
   };
 }
 

@@ -1,5 +1,8 @@
 // VISTA
 
+// Definimos Symbol para implementar el método
+const EXCECUTE_HANDLER = Symbol("excecuteHandler");
+
 // Creamos la clase, declaramos las propiedades que vamos a utilizar más habitualmente
 class RestaurantView {
   constructor() {
@@ -7,23 +10,57 @@ class RestaurantView {
     this.menu = document.querySelector(".lista.nav__lista"); // Menu de navegacion
     this.categories = document.getElementById("categories");
     this.preMain = document.getElementById("platosRandom");
+    this.contador = 0; // Contador para el nombre al abrir una nueva ventana
+    this.ventanas = []; // Array donde almacenamos las ventanas abiertas
+
+    // Aqui guardaremos la referencia de la nueva ventana
+    this.dishWindow = null;
+  }
+
+  [EXCECUTE_HANDLER](
+    handler, // Función de manejo que se ejecutará
+    handlerArguments, // Argumentos que se pasarán a la función de manejo
+    scrollElement, // Elemento en la página hacia el cual se realizará un desplazamiento
+    data, // Datos asociados con la entrada del historial
+    url, // URL que se asocia con la entrada del historial
+    event // Objeto de evento asociado con la acción
+  ) {
+    // Ejecuta la función de manejo con los argumentos proporcionados
+    handler(...handlerArguments);
+
+    // Busca el elemento en la página hacia el cual se realizará un desplazamiento
+    const scroll = document.querySelector(scrollElement);
+
+    // Log para depuración, imprime el elemento encontrado
+    console.log(scroll);
+
+    // Si se encuentra el elemento, realiza un desplazamiento suave hacia él
+    if (scroll) {
+      scroll.scrollIntoView();
+    }
+    // Agrega una nueva entrada al historial del navegador
+    history.pushState(data, null, url);
+
+    // Evita la acción predeterminada del evento (p. ej., la navegación normal de la página)
+    event.preventDefault();
   }
 
   // Método para cada vez que se le de al inicio o al logo, se invoqué el método pasado por parmetro
   // prettier-ignore
   bindInit(handler) {
-    document.getElementById("inicio").addEventListener("click", (event) => {
-      handler();
+    document.getElementById('init').addEventListener('click', (event) => {
+    this[EXCECUTE_HANDLER](handler, [], 'body', { action: 'init' }, '#',
+    event);
     });
-
-    document
-      .getElementById("logo__image").addEventListener("click", (event) => {
-        handler();
-      });
-  }
+    document.getElementById('logo__image').addEventListener('click', (event) => {
+    this[EXCECUTE_HANDLER](handler, [], 'body', { action: 'init' }, '#',
+    event);
+    });
+    }
 
   // Iteramos sobre las categorias y las mostramos al inicio
   showCategories(categories) {
+    this.categories.replaceChildren();
     // Si hay mas de un elemento hijo elimina el 2
     if (this.categories.children.length > 1)
       this.categories.children[1].remove();
@@ -63,7 +100,7 @@ class RestaurantView {
     li.insertAdjacentHTML(
       "beforeend",
       `<a class="nav-link dropdown-toggle" 
-      href="#" id="navCats" role="button"
+      href="#product-list" id="navCats" role="button"
       data-bs-toggle="dropdown" aria-expanded="false">Categorías</a>`
     );
     // Creamos la lista ordenada que irá dentro del elemento li del menu
@@ -175,6 +212,9 @@ class RestaurantView {
   }
 
   RandomDishes(dishes) {
+    // Borramos la zona
+    this.dishh.replaceChildren();
+    this.preMain.replaceChildren();
     let copiaDishes = [];
     let platosAleatorios = [];
     let numeroPlatos = 3;
@@ -197,9 +237,9 @@ class RestaurantView {
 
       container.insertAdjacentHTML(
         "beforeend",
-        `<div><a data-dish=${plato.name}><img class="category-image" alt="${
+        `<div><a data-dish=${
           plato.name
-        }" 
+        } href="#product-list"><img class="category-image" alt="${plato.name}" 
         src="${
           "./Multimedia/" + plato.name + ".jpg"
         }" style="max-width: 100%; max-height: 550px;" />  <div>
@@ -220,7 +260,16 @@ class RestaurantView {
     // Recorremos cada enlace y le añadimos el evento con el que se activira la callback
     for (const li of links) {
       li.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.category);
+        // Obtenemos la categoria clickeada
+        const { category } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handler,
+          [category],
+          "#product-list",
+          { action: "dishCategoryList", category },
+          "#product-list",
+          event
+        );
       });
     }
   }
@@ -234,8 +283,15 @@ class RestaurantView {
     // Y ahora recorreremos cada uno de esos elementos y le añadimos un enlace de clickear
     for (const li of links) {
       li.querySelector("a").addEventListener("click", (event) => {
-        // Cuando clickea accede a la callback con la categoria del elementoq que hemos pulsado
-        handler(event.currentTarget.dataset.category);
+        const { category } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handler,
+          [category],
+          "#product-list",
+          { action: "dishCategoryList", category },
+          "#product-list",
+          event
+        );
       });
     }
   }
@@ -249,12 +305,21 @@ class RestaurantView {
     // Recorremos cada enlace y le añadimos el evento con el que se activira la callback
     for (const li of links) {
       li.addEventListener("click", (event) => {
-        handle(event.currentTarget.dataset.allergen);
+        // Obtenemos la categoria clickeada
+        const allergen = event.currentTarget.dataset.allergen;
+        this[EXCECUTE_HANDLER](
+          handle,
+          [allergen],
+          "#product-list",
+          { action: "dishAllergenList", allergen },
+          "#product-list",
+          event
+        );
       });
     }
   }
 
-  bindMenuDishesMenu(handler) {
+  bindMenuDishesMenu(handle) {
     // Cogemos el elemento de la lista
     let lista = document.getElementById("navMenus");
     const links = lista.nextSibling.querySelectorAll("a");
@@ -262,12 +327,21 @@ class RestaurantView {
     // Recorremos cada enlace y le añadimos el evento con el que se activira la callback
     for (const li of links) {
       li.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.menu);
+        // Obtenemos la categoria clickeada
+        const { menu } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handle,
+          [menu],
+          "#product-list",
+          { action: "menuList", menu },
+          "#product-list",
+          event
+        );
       });
     }
   }
 
-  bindRestaurantsDishesMenu(handler) {
+  bindRestaurantsDishesMenu(handle) {
     // Cogemos el elemento de la lista
     let lista = document.getElementById("navRest");
     const links = lista.nextSibling.querySelectorAll("a");
@@ -275,7 +349,16 @@ class RestaurantView {
     // Recorremos cada enlace y le añadimos el evento con el que se activira la callback
     for (const li of links) {
       li.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.restaurant);
+        // Obtenemos la categoria clickeada
+        const { restaurant } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handle,
+          [restaurant],
+          "#product-list",
+          { action: "restaurantList", restaurant },
+          "#product-list",
+          event
+        );
       });
     }
   }
@@ -298,7 +381,7 @@ class RestaurantView {
         "beforeend",
         `
             <div class="plate-item">
-                <a data-dish="${dish.name}">
+                <a data-dish="${dish.name}" href="#product-list">
                     <div>
                         <img class="category-image plate-image" 
                              style="max-width: 100%; max-height: 550px;" 
@@ -342,14 +425,21 @@ class RestaurantView {
     console.log(div);
 
     // Obtenemos todos los enlaces que son descendientes de los divs hijos del div principal
-    const enlaces = div.querySelectorAll("a");
-    console.log(enlaces);
+    const links = div.querySelectorAll("a");
 
     // Iteramos sobre los enlaces
-    for (const enlace of enlaces) {
-      enlace.addEventListener("click", (event) => {
-        // Accedemos al atributo 'data-dish' del enlace y lo pasamos al manejador
-        handle(event.currentTarget.dataset.dish);
+    for (const li of links) {
+      li.addEventListener("click", (event) => {
+        // Obtenemos la categoria clickeada
+        const { dish } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handle,
+          [dish],
+          "#product-list",
+          { action: "dishBind", dish },
+          "#product-list",
+          event
+        );
       });
     }
   }
@@ -373,9 +463,13 @@ class RestaurantView {
                 <p class="card-text" style="font-size: 0.9rem;">Ingredientes: ${
                   dish.ingredients
                 }</p>
-                <button class="btn btn-primary" onclick="comprar('${
+                <button class="btn btn-primary" data-dish= ${
                   dish.name
-                }')">Comprar</button>
+                }>Comprar</button>
+                <br> 
+                <button id="b-open" class="btn btn-primary" data-dish= ${
+                  dish.name
+                }>Nueva <br>Ventana</button>
                 </div>
             </div>
             
@@ -386,13 +480,128 @@ class RestaurantView {
 
   bindShowRandomDish(handle) {
     const div = document.getElementById("platosRandom");
-    const enlaces = div.querySelectorAll("a");
+    const links = div.querySelectorAll("a");
 
-    for (const enlace of enlaces) {
-      enlace.addEventListener("click", (event) => {
-        handle(event.currentTarget.dataset.dish);
+    for (const li of links) {
+      li.addEventListener("click", (event) => {
+        // Obtenemos la categoria clickeada
+        const { dish } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handle,
+          [dish],
+          "#product-list",
+          { action: "randomDish", dish },
+          "#product-list",
+          event
+        );
       });
     }
+  }
+
+  showProductInNewWindow(dish) {
+    // Cogemos los elementos de la nueva ventana
+    const main = this.dishWindow.document.querySelector("main");
+    const header = this.dishWindow.document.querySelector("header nav");
+
+    // Los vaciamos
+    main.replaceChildren();
+    header.replaceChildren();
+    let container;
+
+    // Si existe  el plato
+    if (dish) {
+      this.dishWindow.document.title = dish.name;
+      header.insertAdjacentHTML(
+        "beforeend",
+        `<h1 dataserial="${dish.name}" class="display-5">${dish.name} -${dish.description}</h1>`
+      );
+      container = document.createElement("div");
+      container.id = "single-product";
+      container.classList.add(`${dish.constructor.name}-style`);
+      container.classList.add("container");
+      container.classList.add("mt-5");
+      container.classList.add("mb-5");
+      container.insertAdjacentHTML(
+        "beforeend",
+        `<div class="row d-flex
+justify-content-center">
+<div class="col-md-10">
+<div class="card">
+<div class="row">
+<div class="col-md-12">
+<div class="images p-3">
+<div class="text-center p-4"> <img id="main-image"
+ src="${"./Multimedia/" + dish.name + ".jpg"}""/> </div>
+</div>
+</div>
+<div class="col-md-12">
+<div class="product p-4">
+<div class="mt-4 mb-3"> <span class="text-uppercase
+text-muted brand">${dish.name}</span>
+<h5 class="text-uppercase">${dish.description}</h5>
+<div class="price d-flex flex-row align-itemscenter">
+<span class="actprice">${dish.ingredients}</span>
+</div>
+</div>
+<p class="about">${dish.description}</p>
+<div class="sizes mt-5">
+<h6 class="text-uppercase">Características</h6>
+</div>
+<div class="cart mt-4 align-items-center"> <button
+data-serial="${
+          dish.name
+        }" class="btn btn-primary text-uppercase mr2 px-4">Comprar</button> </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>`
+      );
+      container.insertAdjacentHTML(
+        "beforeend",
+        '<button class="btn btnprimary text-uppercase m-2 px-4"onClick="window.close()">Cerrar</button>'
+      );
+      main.append(container);
+    }
+  }
+
+  // Método para cuando le demos al botón de abrir en nueva ventana
+  bindShowProductInNewWindow(handler) {
+    const bOpen = document.getElementById("b-open");
+
+    // Verificamos si la ventana es nula o esta cerrada para abrirla si no lo esta
+    bOpen.addEventListener("click", (event) => {
+      this.contador++;
+      let nombre = "dishWindow" + this.contador;
+
+      this.dishWindow = window.open(
+        "Dish.html",
+        nombre,
+        "width=800, height=600, top=250, left=250, titlebar=yes, toolbar=no, menubar=no, location=no"
+      );
+
+      this.ventanas.push(this.dishWindow);
+
+      // Agregamos el evento que se ejecutará cuando el contenido de la ventana emergente se cargue
+      this.dishWindow.addEventListener("load", () => {
+        handler(event.target.dataset.dish);
+      });
+    });
+  }
+
+  // Método para cerrar ventana
+  closeWindow() {
+    let botonCerrar = document.getElementById("cerrarVentana"); // Boton cerrar ventana
+
+    botonCerrar.addEventListener("click", () => {
+      // Recorremos todas las ventanas para cerrarla
+      for (const ventana of this.ventanas) {
+        if (ventana || !ventana.closed()) {
+          ventana.close();
+        }
+      }
+    });
   }
 }
 
